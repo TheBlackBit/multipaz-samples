@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 import org.multipaz.document.DocumentStore
 import org.multipaz.samples.wallet.cmp.util.hasAnyUsableCredential
+import org.multipaz.securearea.SecureArea
 import org.multipaz.util.Logger
 
 private const val TAG = "AccountScreen"
@@ -33,14 +34,18 @@ private const val TAG = "AccountScreen"
 @Composable
 fun HomeScreen(
     documentStore: DocumentStore = koinInject(),
+    secureArea: SecureArea = koinInject(),
 ) {
     var selectedTabRow by remember { mutableStateOf(1) }
     val tabs = listOf("Explore", "Account")
     var hasCredentials by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(Unit) {
-        val hasCred = documentStore.hasAnyUsableCredential()
-        hasCredentials = hasCred
+        val hasCred = documentStore.hasAnyUsableCredential(
+            documentStore = documentStore,
+            secureArea = secureArea
+        )
+        hasCredentials = true
         Logger.i(TAG, "AccountScreen: hasAnyUsableCredential: $hasCred")
     }
 
